@@ -1,38 +1,33 @@
-# Project Title
+# NEEA - Flex-Load Calculator
 
-A brief, one-to-two sentence description of what this project does and why it exists.
+A Python- and Excel-based calculation tool that determines flex load capability and aggregation impact, extended via OCHRE simulation to support participation in different grid services. 
 
 ## Contributors
-List of collaborators who helped you in this project
+- Alex Wardwell - [alex_neea_flex_load_26](https://github.com/PortlandStatePowerLab/alex_neea_flex_load_26.git)
+- Thomas Metzler - [thomas_neea_flex_load_26](https://github.com/PortlandStatePowerLab/thomas_neea_flex_load_26.git)
 
 ## Short Description
-
-* **Feature 1** - Short description of key capability.
+This code will run Reserve Service simulation within the OCHRE framework
 
 ## Tech Stack
-
-* **Language:** TypeScript / Python / Go
+- Programming language: Python
+- Simulation environment: OCHRE
 
 ## Repository Contents
-
-List of folders in your repository with a short description of the contents of each folder
+Will be updated soon.
 
 ## Getting Started
-
-Follow these steps to set up the project locally.
+Will be updated soon.
 
 ### Prerequisites
 
-List any software, tools, or global packages needed:
-* Node.js (v18+) or Python (3.11+)
-* Docker / Docker Compose
-* Package manager (npm / yarn / pnpm)
+- Python: Python version >=3.9 and <3.13, per OCHRE's requirements.
+- OCHRE
+
 
 ### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone
-   ```
+- Python: Install the desired [Python](https://python.org/) version with respect to OCHRE's requirements. 
+- OCHRE: Install [OCHRE](https://github.com/NatLabRockies/OCHRE.git) using its installation instructions (`pip install ochre-nrel`).
 
 ### If I want to work on this project, where should I start from?
+Will be updated soon.
