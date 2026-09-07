@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<XML-File xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<July>
+		<Max>14051.25</Max>
+		<Upper>11893.4375</Upper>
+		<Average>11112.625</Average>
+		<Lower>9907.125</Lower>
+	</July>
+	<December>
+		<Max>11331.75</Max>
+		<Upper>11068.09375</Upper>
+		<Average>10877.8125</Average>
+		<Lower>10479.46875</Lower>
+	</December>
+</XML-File>

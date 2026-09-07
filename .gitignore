@@ -1,2 +1,13 @@
 .venv/
 .vscode/
+__pycache__/
+*.pyc
+
+# HPWH bulk data -- regenerable via HPWH_A1/A2/A3 (per-home ResStock
+# datasets) or simulation output (Ready_data/), not primary source data.
+# HPWH/Weather/ is intentionally NOT excluded -- it's a single small EPW
+# file, worth tracking like code.
+HPWH/*Input Files*/
+HPWH/Ready_data/
+HPWH/Metadata/
+HPWH/HPWH Filtered/

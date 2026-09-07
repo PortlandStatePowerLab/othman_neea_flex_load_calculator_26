@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XML-File>
+
+
+<FlexLoads>
+
+<!-- ==================== Heat Pump Water Heater ==================== -->
+
+	<FlexLoad>
+  	
+		<FlexLoadType>Heat Pump Water Heater</FlexLoadType>
+
+	    	<Specification>
+		        <Order>1</Order>
+		        <Variable>CompPwr</Variable>
+		        <Input>Rated Compressor Power [kW]</Input>
+		        <Value>0.45</Value>
+		</Specification>
+
+	 	<Specification>
+		        <Order>2</Order>
+		        <Variable>ResistPwr</Variable>
+		        <Input>Rated Resistance Element Power [kW]</Input>
+		        <Value>4.50</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>3</Order>
+		        <Variable>TankVol</Variable>
+		        <Input>Tank Volume [gal]</Input>
+		        <Value>46.0</Value>
+		</Specification>
+
+    		<Specification>
+		        <Order>4</Order>
+		        <Variable>MaxWaterTemp</Variable>
+		        <Input>Maximum Water Temperature [°F]</Input>
+		        <Value>150</Value>
+    		</Specification>
+
+		<Specification>
+		        <Order>5</Order>
+		        <Variable>MinWaterTemp</Variable>
+		        <Input>Minimum Water Temperature [°F]</Input>
+		        <Value>95</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>6</Order>
+		        <Variable>COP/UEF</Variable>
+		        <Input>Rated COP or UEF</Input>
+		        <Value>3.45</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>7</Order>
+		        <Variable>HeatCap</Variable>
+		        <Input>Heating Capacity [BTU/hr]</Input>
+		        <Value>2</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>8</Order>
+		        <Variable>RespTime</Variable>
+		        <Input>Response Time [s]</Input>
+		        <Value>30</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>9</Order>
+		        <Variable>CtrlInt</Variable>
+		        <Input>Control Interval [s]</Input>
+		        <Value>120</Value>
+		</Specification>
+
+	</FlexLoad>
+
+
+<!-- ==================== Electric Resistance Water Heater ==================== -->
+
+	<FlexLoad>
+  	
+		<FlexLoadType>Electric Resistance Water Heater</FlexLoadType>
+
+	    	<Specification>
+		        <Order>1</Order>
+		        <Variable>CompPwr</Variable>
+		        <Input>Rated Compressor Power [kW]</Input>
+		        <Value>0.45</Value>
+		</Specification>
+
+	 	<Specification>
+		        <Order>2</Order>
+		        <Variable>ResistPwr</Variable>
+		        <Input>Rated Resistance Element Power [kW]</Input>
+		        <Value>4.50</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>3</Order>
+		        <Variable>TankVol</Variable>
+		        <Input>Tank Volume [gal]</Input>
+		        <Value>46.0</Value>
+		</Specification>
+
+    		<Specification>
+		        <Order>4</Order>
+		        <Variable>MaxWaterTemp</Variable>
+		        <Input>Maximum Water Temperature [°F]</Input>
+		        <Value>150</Value>
+    		</Specification>
+
+		<Specification>
+		        <Order>5</Order>
+		        <Variable>MinWaterTemp</Variable>
+		        <Input>Minimum Water Temperature [°F]</Input>
+		        <Value>95</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>6</Order>
+		        <Variable>COP/UEF</Variable>
+		        <Input>Rated COP or UEF</Input>
+		        <Value>3.45</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>7</Order>
+		        <Variable>HeatCap</Variable>
+		        <Input>Heating Capacity [BTU/hr]</Input>
+		        <Value>2</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>8</Order>
+		        <Variable>RespTime</Variable>
+		        <Input>Response Time [s]</Input>
+		        <Value>30</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>9</Order>
+		        <Variable>CtrlInt</Variable>
+		        <Input>Control Interval [s]</Input>
+		        <Value>120</Value>
+		</Specification>
+
+	</FlexLoad>
+
+<!-- ==================== HVAC ==================== -->
+
+	<FlexLoad>
+  	
+		<FlexLoadType>HVAC</FlexLoadType>
+
+	    	<Specification>
+		        <Order>1</Order>
+		        <Variable>CompPwr</Variable>
+		        <Input>Rated Compressor Power [kW]</Input>
+		        <Value>0.45</Value>
+		</Specification>
+
+	 	<Specification>
+		        <Order>2</Order>
+		        <Variable>ResistPwr</Variable>
+		        <Input>Rated Resistance Element Power [kW]</Input>
+		        <Value>4.50</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>3</Order>
+		        <Variable>TankVol</Variable>
+		        <Input>Tank Volume [gal]</Input>
+		        <Value>46.0</Value>
+		</Specification>
+
+    		<Specification>
+		        <Order>4</Order>
+		        <Variable>MaxWaterTemp</Variable>
+		        <Input>Maximum Water Temperature [°F]</Input>
+		        <Value>150</Value>
+    		</Specification>
+
+		<Specification>
+		        <Order>5</Order>
+		        <Variable>MinWaterTemp</Variable>
+		        <Input>Minimum Water Temperature [°F]</Input>
+		        <Value>95</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>6</Order>
+		        <Variable>COP/UEF</Variable>
+		        <Input>Rated COP or UEF</Input>
+		        <Value>3.45</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>7</Order>
+		        <Variable>HeatCap</Variable>
+		        <Input>Heating Capacity [BTU/hr]</Input>
+		        <Value>2</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>8</Order>
+		        <Variable>RespTime</Variable>
+		        <Input>Response Time [s]</Input>
+		        <Value>30</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>9</Order>
+		        <Variable>CtrlInt</Variable>
+		        <Input>Control Interval [s]</Input>
+		        <Value>120</Value>
+		</Specification>
+
+	</FlexLoad>
+
+<!-- ==================== EV Charger ==================== -->
+
+	<FlexLoad>
+  	
+		<FlexLoadType>EV Charger</FlexLoadType>
+
+	    	<Specification>
+		        <Order>1</Order>
+		        <Variable>CompPwr</Variable>
+		        <Input>Rated Compressor Power [kW]</Input>
+		        <Value>0.45</Value>
+		</Specification>
+
+	 	<Specification>
+		        <Order>2</Order>
+		        <Variable>ResistPwr</Variable>
+		        <Input>Rated Resistance Element Power [kW]</Input>
+		        <Value>4.50</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>3</Order>
+		        <Variable>TankVol</Variable>
+		        <Input>Tank Volume [gal]</Input>
+		        <Value>46.0</Value>
+		</Specification>
+
+    		<Specification>
+		        <Order>4</Order>
+		        <Variable>MaxWaterTemp</Variable>
+		        <Input>Maximum Water Temperature [°F]</Input>
+		        <Value>150</Value>
+    		</Specification>
+
+		<Specification>
+		        <Order>5</Order>
+		        <Variable>MinWaterTemp</Variable>
+		        <Input>Minimum Water Temperature [°F]</Input>
+		        <Value>95</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>6</Order>
+		        <Variable>COP/UEF</Variable>
+		        <Input>Rated COP or UEF</Input>
+		        <Value>3.45</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>7</Order>
+		        <Variable>HeatCap</Variable>
+		        <Input>Heating Capacity [BTU/hr]</Input>
+		        <Value>2</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>8</Order>
+		        <Variable>RespTime</Variable>
+		        <Input>Response Time [s]</Input>
+		        <Value>30</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>9</Order>
+		        <Variable>CtrlInt</Variable>
+		        <Input>Control Interval [s]</Input>
+		        <Value>120</Value>
+		</Specification>
+
+	</FlexLoad>
+
+
+<!-- ==================== Dryer ==================== -->
+
+	<FlexLoad>
+  	
+		<FlexLoadType>Electric Resistance Water Heater</FlexLoadType>
+
+	    	<Specification>
+		        <Order>1</Order>
+		        <Variable>CompPwr</Variable>
+		        <Input>Rated Compressor Power [kW]</Input>
+		        <Value>0.45</Value>
+		</Specification>
+
+	 	<Specification>
+		        <Order>2</Order>
+		        <Variable>ResistPwr</Variable>
+		        <Input>Rated Resistance Element Power [kW]</Input>
+		        <Value>4.50</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>3</Order>
+		        <Variable>TankVol</Variable>
+		        <Input>Tank Volume [gal]</Input>
+		        <Value>46.0</Value>
+		</Specification>
+
+    		<Specification>
+		        <Order>4</Order>
+		        <Variable>MaxWaterTemp</Variable>
+		        <Input>Maximum Water Temperature [°F]</Input>
+		        <Value>150</Value>
+    		</Specification>
+
+		<Specification>
+		        <Order>5</Order>
+		        <Variable>MinWaterTemp</Variable>
+		        <Input>Minimum Water Temperature [°F]</Input>
+		        <Value>95</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>6</Order>
+		        <Variable>COP/UEF</Variable>
+		        <Input>Rated COP or UEF</Input>
+		        <Value>3.45</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>7</Order>
+		        <Variable>HeatCap</Variable>
+		        <Input>Heating Capacity [BTU/hr]</Input>
+		        <Value>2</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>8</Order>
+		        <Variable>RespTime</Variable>
+		        <Input>Response Time [s]</Input>
+		        <Value>30</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>9</Order>
+		        <Variable>CtrlInt</Variable>
+		        <Input>Control Interval [s]</Input>
+		        <Value>120</Value>
+		</Specification>
+
+	</FlexLoad>
+
+<!-- ==================== Battery ==================== -->
+
+	<FlexLoad>
+  	
+		<FlexLoadType>Battery</FlexLoadType>
+
+	    	<Specification>
+		        <Order>1</Order>
+		        <Variable>CompPwr</Variable>
+		        <Input>Rated Compressor Power [kW]</Input>
+		        <Value>0.45</Value>
+		</Specification>
+
+	 	<Specification>
+		        <Order>2</Order>
+		        <Variable>ResistPwr</Variable>
+		        <Input>Rated Resistance Element Power [kW]</Input>
+		        <Value>4.50</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>3</Order>
+		        <Variable>TankVol</Variable>
+		        <Input>Tank Volume [gal]</Input>
+		        <Value>46.0</Value>
+		</Specification>
+
+    		<Specification>
+		        <Order>4</Order>
+		        <Variable>MaxWaterTemp</Variable>
+		        <Input>Maximum Water Temperature [°F]</Input>
+		        <Value>150</Value>
+    		</Specification>
+
+		<Specification>
+		        <Order>5</Order>
+		        <Variable>MinWaterTemp</Variable>
+		        <Input>Minimum Water Temperature [°F]</Input>
+		        <Value>95</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>6</Order>
+		        <Variable>COP/UEF</Variable>
+		        <Input>Rated COP or UEF</Input>
+		        <Value>3.45</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>7</Order>
+		        <Variable>HeatCap</Variable>
+		        <Input>Heating Capacity [BTU/hr]</Input>
+		        <Value>2</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>8</Order>
+		        <Variable>RespTime</Variable>
+		        <Input>Response Time [s]</Input>
+		        <Value>30</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>9</Order>
+		        <Variable>CtrlInt</Variable>
+		        <Input>Control Interval [s]</Input>
+		        <Value>120</Value>
+		</Specification>
+
+	</FlexLoad>
+
+
+<!-- ==================== Generic ==================== -->
+
+	<FlexLoad>
+  	
+		<FlexLoadType>Generic</FlexLoadType>
+
+	    	<Specification>
+		        <Order>1</Order>
+		        <Variable>CompPwr</Variable>
+		        <Input>Rated Compressor Power [kW]</Input>
+		        <Value>0.45</Value>
+		</Specification>
+
+	 	<Specification>
+		        <Order>2</Order>
+		        <Variable>ResistPwr</Variable>
+		        <Input>Rated Resistance Element Power [kW]</Input>
+		        <Value>4.50</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>3</Order>
+		        <Variable>TankVol</Variable>
+		        <Input>Tank Volume [gal]</Input>
+		        <Value>46.0</Value>
+		</Specification>
+
+    		<Specification>
+		        <Order>4</Order>
+		        <Variable>MaxWaterTemp</Variable>
+		        <Input>Maximum Water Temperature [°F]</Input>
+		        <Value>150</Value>
+    		</Specification>
+
+		<Specification>
+		        <Order>5</Order>
+		        <Variable>MinWaterTemp</Variable>
+		        <Input>Minimum Water Temperature [°F]</Input>
+		        <Value>95</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>6</Order>
+		        <Variable>COP/UEF</Variable>
+		        <Input>Rated COP or UEF</Input>
+		        <Value>3.45</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>7</Order>
+		        <Variable>HeatCap</Variable>
+		        <Input>Heating Capacity [BTU/hr]</Input>
+		        <Value>2</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>8</Order>
+		        <Variable>RespTime</Variable>
+		        <Input>Response Time [s]</Input>
+		        <Value>30</Value>
+		</Specification>
+
+		<Specification>
+		        <Order>9</Order>
+		        <Variable>CtrlInt</Variable>
+		        <Input>Control Interval [s]</Input>
+		        <Value>120</Value>
+		</Specification>
+
+	</FlexLoad>
+
+
+
+</FlexLoads>
+
+</XML-File>
