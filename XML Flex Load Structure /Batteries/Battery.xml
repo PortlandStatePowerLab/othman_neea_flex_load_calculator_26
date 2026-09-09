@@ -1,0 +1,22 @@
+<Battery>
+    <DeviceName> Battery </DeviceName>
+    <Version>2</Version>
+  
+        <RatedPwr> </RatedPwr>
+        <UsableEnergyCap> </UsableEnergyCap>
+        <SoCOpRng> </SoCOpRng>
+        <MaxRespTime> </MaxRespTime>
+        <RecoveryRate> </RecoveryRate>
+        <CommInt> </CommInt>
+
+        <Schedule> </Schedule>
+        <App> </App>
+        <Wireless> </Wireless>
+        <ToU> </ToU>
+        <Standard> </Standard>
+        <UCM> </UCM>
+        <Compliant> </Compliant>
+        <DataCnfrmnt> </DataCnfrmnt>
+        <ShiftCnfrmnt> </ShiftCnfrmnt>
+
+</Battery>
