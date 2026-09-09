@@ -1,0 +1,26 @@
+<HPWH>
+    <DeviceName>Ariston ER50G240V</DeviceName>
+    <Version>1</Version>
+
+    <Inputs>
+        <ResistPwr>4.5</ResistPwr>
+        <TankVol>50</TankVol>
+        <MaxWaterTemp>150</MaxWaterTemp>
+        <MinWaterTemp>95</MinWaterTemp>
+        <COPUEF>3.45</COPUEF>
+        <HeatCap>2.0</HeatCap>
+        <ResponseTime>30</ResponseTime>
+        <CntrlInt>120</CntrlInt>
+    </Inputs>
+
+    <Schedule>Yes</Schedule>
+    <App>Yes</App>
+    <Network>Yes</Network>
+    <Dynamic>Yes</Dynamic>
+    <Standard>Yes</Standard>
+    <UCM>Yes</UCM>
+    <Compliant>Yes</Compliant>
+    <DataCnfrmnt>0.5</DataCnfrmnt>
+    <ShiftCnfrmnt>0.5</ShiftCnfrmnt>
+
+</HPWH>
