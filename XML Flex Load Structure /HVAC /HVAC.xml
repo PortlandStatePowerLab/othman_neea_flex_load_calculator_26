@@ -1,0 +1,25 @@
+<HVAC>
+    <DeviceName> HVAC </DeviceName>
+    <Version>1</Version>
+
+        <ElectPwr> </ElectPwr>
+        <HeatCap> </HeatCap>
+        <CoolCap> </CoolCap>
+        <MinMod> </MinMod>
+        <MaxIndoorTemp> </MaxIndoorTemp>
+        <RespTime> </RespTime>
+        <CntrlInt> </CntrlInt>
+        <BuildCap> </BuildCap>
+
+        <Schedule> </Schedule>
+        <App> </App>
+        <Wireless> </Wireless>
+        <ToU> </ToU>
+        <Standard> </Standard>
+        <UCM> </UCM>
+        <Compliant> </Compliant>
+        <DataCnfrmnt> </DataCnfrmnt>
+        <ShiftCnfrmnt> </ShiftCnfrmnt>
+
+
+</HVAC>
