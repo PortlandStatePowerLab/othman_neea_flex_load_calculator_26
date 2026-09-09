@@ -1,0 +1,22 @@
+<EV>
+    <DeviceName> Electric Vehicle 2 </DeviceName>
+    <Version>1</Version>
+
+        <ChargePwr> 10.5</ChargePwr>
+        <BattCap> </BattCap>
+        <BattFlex> </BattFlex>
+        <ChargeEffic> </ChargeEffic>
+        <RespTime>1</RespTime>
+        <CntrlInt> </CntrlInt>
+
+        <Schedule> yes </Schedule>
+        <App> yes </App>
+        <Network> yes </Network>
+        <Dynamic> yes </Dynamic>
+        <Standard> yes </Standard>
+        <UCM> yes </UCM>
+        <Compliant> yes </Compliant>
+        <DataCnfrmnt> 0.8 </DataCnfrmnt>
+        <ShiftCnfrmnt> 0.8 </ShiftCnfrmnt>
+
+</EV>
