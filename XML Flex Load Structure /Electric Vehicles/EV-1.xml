@@ -9,14 +9,14 @@
         <RespTime>1</RespTime>
         <CntrlInt> </CntrlInt>
 
-        <Schedule> </Schedule>
-        <App> </App>
-        <Wireless> </Wireless>
-        <ToU> </ToU>
-        <Standard> </Standard>
-        <UCM> </UCM>
-        <Compliant> </Compliant>
-        <DataCnfrmnt> </DataCnfrmnt>
-        <ShiftCnfrmnt> </ShiftCnfrmnt>
+        <Schedule> yes </Schedule>
+        <App> yes </App>
+        <Network> yes </Network>
+        <Dynamic> yes </Dynamic>
+        <Standard> yes </Standard>
+        <UCM> yes </UCM>
+        <Compliant> yes </Compliant>
+        <DataCnfrmnt> 0.8 </DataCnfrmnt>
+        <ShiftCnfrmnt> 0.8 </ShiftCnfrmnt>
 
 </EV>
