@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<XML-File xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<LME_Demand>
 	<July>
 		<Max>1</Max>
 		<Upper>1</Upper>
@@ -12,4 +11,4 @@
 		<Average>1</Average>
 		<Lower>1</Lower>
 	</December>
-</XML-File>
+</LME_Demand>
