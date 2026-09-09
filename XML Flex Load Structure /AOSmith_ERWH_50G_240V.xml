@@ -1,4 +1,4 @@
-<HPWH>
+<ERWH>
     <DeviceName>AO Smith ER50G240V</DeviceName>
     <Version>1</Version>
 
@@ -7,9 +7,9 @@
         <TankVol>50</TankVol>
         <MaxWaterTemp>150</MaxWaterTemp>
         <MinWaterTemp>95</MinWaterTemp>
-        <COPUEF>3.45</COPUEF>
+        <COPUEF>1</COPUEF>
         <HeatCap>2.0</HeatCap>
-        <ResponseTime>30</ResponseTime>
+        <ResponseTime>1</ResponseTime>
         <CntrlInt>120</CntrlInt>
     </Inputs>
 
@@ -23,4 +23,4 @@
     <DataCnfrmnt>0.5</DataCnfrmnt>
     <ShiftCnfrmnt>0.5</ShiftCnfrmnt>
 
-</HPWH>
+</ERWH>
