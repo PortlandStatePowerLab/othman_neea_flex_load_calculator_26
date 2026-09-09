@@ -1,0 +1,22 @@
+<Dryer>
+    <DeviceName> Dryer </DeviceName>
+    <Version>2</Version>
+
+        <RatedPwr> </RatedPwr>
+        <CycleEnergy> </CycleEnergy>
+        <TypCycDur> </TypCycDur>
+        <MaxDefTime> </MaxDefTime>
+        <RespTime> </RespTime>
+        <CntrlInt> </CntrlInt>
+
+        <Schedule> </Schedule>
+        <App> </App>
+        <Wireless> </Wireless>
+        <ToU> </ToU>
+        <Standard> </Standard>
+        <UCM> </UCM>
+        <Compliant> </Compliant>
+        <DataCnfrmnt> </DataCnfrmnt>
+        <ShiftCnfrmnt> </ShiftCnfrmnt>
+
+</Dryer>
