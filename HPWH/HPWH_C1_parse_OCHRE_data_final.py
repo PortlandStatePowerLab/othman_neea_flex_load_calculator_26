@@ -14,6 +14,7 @@ import pandas as pd
 from datetime import datetime
 import csv
 import os
+from run_context import load_filename
 
 # Converts the datetime information in the HEMS data to usable datetimes
 def convert_custom_datetime(series):
@@ -29,9 +30,11 @@ def convert_custom_datetime(series):
 working_dir = os.path.dirname(os.path.abspath(__file__))
 
 #input_file_root = "HPWH_Test_Loadshape_9"
-# OCHRE_FILENAME overrides this when set, matching whatever B3 used for
-# this run (see excel_ochre.py) -- unset, manual runs behave as before.
-input_file_root = os.environ.get("OCHRE_FILENAME", "HPWH_AdmissionControl_n95_testx8_cap8LU")
+# OCHRE_FILENAME overrides this when set (used by excel_ochre.py); unset,
+# inherit whichever B3 version last ran (see run_context.py) so this
+# doesn't need its own name kept in sync by hand -- falling back to the
+# hardcoded default only if no B3 run has ever recorded one yet.
+input_file_root = os.environ.get("OCHRE_FILENAME") or load_filename("HPWH_AdmissionControl_n600_testx8_cap8_rerankLive")
 
 
 input_file_name1 = input_file_root + "_baseline"

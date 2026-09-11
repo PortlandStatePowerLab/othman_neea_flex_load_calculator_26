@@ -5,6 +5,7 @@ Modified on Nov 19 2025
 Modified on Jun 17 2026
 Modified on Aug 31 2026
 Forked to V3 on Aug 31 2026 -- power-capped admission control
+Forked to V4 on Sep 9 2026 -- binned dispatch (replaces per-unit random stagger)
 
 @author: danap
 @edited by: jdinsmor
@@ -44,7 +45,7 @@ _dwelling_init_lock = threading.Lock()
 # overwrite each other. OCHRE_FILENAME overrides this when set (used by
 # excel_ochre.py to give each Excel-triggered run its own name) -- unset,
 # manual runs behave exactly as before.
-filename = os.environ.get('OCHRE_FILENAME', 'HPWH_AdmissionControl_n95_testx8_cap8')
+filename = os.environ.get('OCHRE_FILENAME', 'HPWH_AdmissionControl_n95_testx8_cap8bins')
 
 # Hand this run's name off to the C1/C2/C3 analysis scripts (see
 # run_context.py) so they pick it up automatically instead of needing
@@ -52,7 +53,7 @@ filename = os.environ.get('OCHRE_FILENAME', 'HPWH_AdmissionControl_n95_testx8_ca
 save_filename(filename)
 
 #"HPWH 50 Input Files", "HPWH 66 Input Files/bldg", "HPWH 80 Input Files", "HPWH All Input Files/bldg"
-Input_folder = "All Portland Input Files"  # relative to this script's folder -- must contain each home's HPXML + in.schedules.csv
+Input_folder = "HPWH 50 Input Files"  # relative to this script's folder -- must contain each home's HPXML + in.schedules.csv
 
 # Original OCHRE defaults folder
 ochre_dir = Path(ochre.__file__).resolve().parent
@@ -163,26 +164,36 @@ CAP_KW = 8.0
 ADMISSIONS_PER_TIMESTEP = 8
 
 #########################################
-# Random dispatch time
+# Binned dispatch time -- NEW (V4)
 #########################################
+# Replaces V3's per-unit triangular(5, 30) stagger (a continuous spread of
+# individual dispatch times) with a small number of simultaneous group
+# dispatches: every unit is assigned to one of N_BINS bins, and every unit
+# in a bin gets the exact same delay -- bins fire BIN_SPACING_MINUTES apart.
+# FIRST_BIN_DELAY_MINUTES matches V3's old minimum (5 min) so the earliest
+# bin still fires at the same time V3's earliest units used to.
+N_BINS = 4
+BIN_SPACING_MINUTES = 5
+FIRST_BIN_DELAY_MINUTES = 5
 
-def get_unit_delay_minutes(home_path=None):
-    # Seeded per-home (like OCHRE's own seed=home_path) so the same home
-    # always gets the same dispatch stagger delay across runs -- makes
-    # repeat runs and cap/rate sweeps comparable to each other instead of
-    # confounded by fresh random staggering every run. A local
-    # random.Random(...) instance (not the shared `random` module) avoids
-    # the same cross-thread RNG race _dwelling_init_lock exists to
-    # prevent for OCHRE's construction -- Phase 1 calls this concurrently
-    # across threads.
-    #
-    # triangular(5, 30, mode=5) instead of uniform(5, 30): skews the draw
-    # toward the low end so more units dispatch within the first ~10 min
-    # instead of spreading evenly across the full window -- mode pinned
-    # at the minimum puts peak density at 5 min, tapering linearly to 0
-    # at 30 min. Under uniform, P(delay <= 10) = 20%; under this
-    # triangular, P(delay <= 10) = 1 - ((30-10)/(30-5))^2 = 36%.
-    return random.Random(home_path).triangular(5, 30, 5)
+def assign_bin_delays(homes):
+    """
+    Splits `homes` into N_BINS equal-sized (round-robin) groups and
+    returns {home_path: delay_minutes}, where every home in a group shares
+    the same delay. Bin membership has to be decided over the WHOLE fleet
+    at once (unlike V3's independent per-home draw) so bins come out equal
+    -- shuffled with a fixed seed (not per-home) so the assignment is still
+    identical across repeat runs, keeping cap/rate sweeps comparable like
+    V3's per-home seeding did.
+    """
+    shuffled = list(homes)
+    random.Random(0).shuffle(shuffled)
+
+    delay_by_home = {}
+    for i, home_path in enumerate(shuffled):
+        bin_index = i % N_BINS
+        delay_by_home[home_path] = FIRST_BIN_DELAY_MINUTES + bin_index * BIN_SPACING_MINUTES
+    return delay_by_home
 
 #########################################
 # TEMPERATURE CONVERSIONS F to C
@@ -321,14 +332,14 @@ def build_dwelling_args(hpxml_file, filtered_sched_file, weather_file_path, home
     }
 
 #########################################
-# PHASE 1 -- run each home up through event_end, record temp (UNCHANGED)
+# PHASE 1 -- run each home up through event_end, record temp (dispatch
+# staggering changed in V4: unit_delay_minutes is now passed in, precomputed
+# by assign_bin_delays() over the whole fleet, instead of drawn per-home here)
 #########################################
 
-def simulate_home_phase1(home_path, weather_file_path, event_cfg):
+def simulate_home_phase1(home_path, weather_file_path, event_cfg, unit_delay_minutes):
     filtered_sched_file = filter_schedules(home_path)
     hpxml_file = os.path.join(home_path, XML_ADDRESS)
-
-    unit_delay_minutes = get_unit_delay_minutes(home_path)
 
     dwelling_args_local = build_dwelling_args(hpxml_file, filtered_sched_file, weather_file_path, home_path)
 
@@ -651,13 +662,20 @@ if __name__ == "__main__":
     print(f"Found {len(homes)} homes")
     print(f"Cap: {CAP_KW}kW, {ADMISSIONS_PER_TIMESTEP} admission(s)/timestep")
 
+    # ---- NEW (V4): bin every home into N_BINS dispatch groups up front,
+    # over the whole fleet, so bins come out equal-sized (see
+    # assign_bin_delays()) ----
+    delay_by_home = assign_bin_delays(homes)
+    print(f"Dispatch bins: {N_BINS}, {BIN_SPACING_MINUTES}min apart, starting at {FIRST_BIN_DELAY_MINUTES}min")
+
     # ---- Phase 1: run every home through the reserve event up to
     # event_end, recording each unit's tank temperature at that moment
-    # (unchanged from V2, still parallel -- no aggregate visibility needed) ----
+    # (still parallel -- no aggregate visibility needed; dispatch delay is
+    # now the home's precomputed bin delay instead of a per-home random draw) ----
     phase1_results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
         futures = {
-            executor.submit(simulate_home_phase1, home, WEATHER_FILE, reserve_event): home
+            executor.submit(simulate_home_phase1, home, WEATHER_FILE, reserve_event, delay_by_home[home]): home
             for home in homes
         }
         for f in concurrent.futures.as_completed(futures):

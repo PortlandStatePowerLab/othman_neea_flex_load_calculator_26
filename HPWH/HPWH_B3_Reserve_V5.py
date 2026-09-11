@@ -5,6 +5,8 @@ Modified on Nov 19 2025
 Modified on Jun 17 2026
 Modified on Aug 31 2026
 Forked to V3 on Aug 31 2026 -- power-capped admission control
+Forked to V5 on Sep 9 2026 -- ranks admission priority every timestep
+(live tank temperature) instead of once from temp at event_end
 
 @author: danap
 @edited by: jdinsmor
@@ -44,7 +46,7 @@ _dwelling_init_lock = threading.Lock()
 # overwrite each other. OCHRE_FILENAME overrides this when set (used by
 # excel_ochre.py to give each Excel-triggered run its own name) -- unset,
 # manual runs behave exactly as before.
-filename = os.environ.get('OCHRE_FILENAME', 'HPWH_AdmissionControl_n95_testx8_cap8')
+filename = os.environ.get('OCHRE_FILENAME', 'HPWH_AdmissionControl_n95_testx8_cap8_rerankLive_2hr')
 
 # Hand this run's name off to the C1/C2/C3 analysis scripts (see
 # run_context.py) so they pick it up automatically instead of needing
@@ -52,7 +54,7 @@ filename = os.environ.get('OCHRE_FILENAME', 'HPWH_AdmissionControl_n95_testx8_ca
 save_filename(filename)
 
 #"HPWH 50 Input Files", "HPWH 66 Input Files/bldg", "HPWH 80 Input Files", "HPWH All Input Files/bldg"
-Input_folder = "All Portland Input Files"  # relative to this script's folder -- must contain each home's HPXML + in.schedules.csv
+Input_folder = "HPWH 50 Input Files"  # relative to this script's folder -- must contain each home's HPXML + in.schedules.csv
 
 # Original OCHRE defaults folder
 ochre_dir = Path(ochre.__file__).resolve().parent
@@ -113,7 +115,7 @@ RESERVE_COMMAND = 'SHED'
 if 'reserve_event' not in globals():
     reserve_event = {
         'dispatch_time': '15:00',
-        'duration': 1.5   # 1.5 hr = 90 min event -- unchanged from the validated baseline
+        'duration': 2.0   # 2.0 hr = 120 min event -- unchanged from the validated baseline
     }
 
 # The single calendar day the reserve event happens on -- the LAST day of
@@ -372,25 +374,18 @@ def simulate_home_phase1(home_path, weather_file_path, event_cfg):
     }
 
 #########################################
-# PRIORITY ORDER -- NEW (V3)
+# POWER-CAPPED ADMISSION CONTROL LOOP -- NEW (V3), RE-RANKED EVERY
+# TIMESTEP -- NEW (V5)
 #########################################
-
-def compute_priority_order(phase1_results):
-    """
-    Ranks units by tank temperature at event_end, warmest first. This is
-    PRIORITY ORDER for admission, not a precomputed delay -- the
-    admission-control loop below decides actual release timing
-    dynamically from real-time fleet power, not from this ranking alone.
-    """
-    # Prioritizing units with warmer tank temperatures
-    # return sorted(phase1_results, key=lambda r: r["temp_at_event_end"], reverse=True)
-
-    # Prioritizing units with colder tank temperatures
-    return sorted(phase1_results, key=lambda r: r["temp_at_event_end"], reverse=False)
-
-#########################################
-# POWER-CAPPED ADMISSION CONTROL LOOP -- NEW (V3)
-#########################################
+# V3 computed ONE static priority order up front (from temp_at_event_end)
+# and walked it with a single next_candidate_idx pointer -- once a unit's
+# rank was set, it kept that rank for the rest of the recovery. V5 instead
+# re-ranks every still-waiting-and-eligible unit by its CURRENT (live)
+# tank temperature at EVERY timestep, so a unit that reheats faster (or
+# slower) than its neighbors while waiting can move up (or down) the queue
+# before it's actually admitted -- not just at the single event_end
+# snapshot. The cap/rate-gated release mechanics (below) are otherwise
+# unchanged from V3.
 
 def run_admission_controlled_recovery(phase1_results, event_cfg):
     """
@@ -407,15 +402,22 @@ def run_admission_controlled_recovery(phase1_results, event_cfg):
     the update() calls this loop makes -- so the sequential cost here is
     modest (~a few minutes for a 95-home fleet).
 
-    Mechanics: units are ranked warmest-first (priority order). Once a
-    unit reaches its OWN event_end it's eligible and waits in SHED. At
-    each timestep, up to MAX_ADMISSIONS_PER_TIMESTEP new units -- the
-    next-highest-priority eligible ones still waiting -- are admitted
-    (switched to baseline setpoint/deadband, an instant step change,
-    staying admitted from then on), gated on the fleet's aggregate WH
-    power as of the PREVIOUS completed timestep being below the CURRENT
-    cap, CAP_KW. Otherwise no new unit is admitted this timestep, and the
-    same candidate is reconsidered next timestep.
+    Mechanics (V5): once a unit reaches its OWN event_end it's eligible
+    and waits in SHED. At each timestep, the pool of units that are BOTH
+    eligible and still waiting is re-ranked from scratch by each unit's
+    MOST RECENTLY KNOWN tank temperature (coldest first, matching V3's
+    current setting -- see the sort key below to flip it back to
+    warmest-first); up to MAX_ADMISSIONS_PER_TIMESTEP units from the top
+    of that fresh ranking are admitted (switched to baseline setpoint/
+    deadband, an instant step change, staying admitted from then on),
+    gated on the fleet's aggregate WH power as of the PREVIOUS completed
+    timestep being below the CURRENT cap, CAP_KW. Otherwise no new unit is
+    admitted this timestep, and the same pool is simply re-ranked again
+    next timestep. Because the pool is rebuilt fresh each timestep (rather
+    than scanned from a fixed array with an early-break on the first
+    ineligible entry, as V3 did), every currently-eligible unit is always
+    considered -- there's no V3-style stall where one not-yet-eligible
+    unit blocks others behind it in a stale static order.
 
     ADMISSIONS_PER_TIMESTEP is a flat count, not derived from fleet size:
     however generous the power cap, it still takes at least n / rate
@@ -426,19 +428,22 @@ def run_admission_controlled_recovery(phase1_results, event_cfg):
     testing a fleet size where 1/timestep can't clear the backlog in
     time -- see the n=95 rate sweep for the peak-power cost of doing so.
     """
-    priority_order = compute_priority_order(phase1_results)
-    n = len(priority_order)
+    all_results = phase1_results
     max_admissions_per_timestep = max(1, ADMISSIONS_PER_TIMESTEP)
 
-    sim_times = priority_order[0]["sim_times"]
-    resume_idx_by_key = {id(r): r["resume_idx"] for r in priority_order}
+    sim_times = all_results[0]["sim_times"]
+    resume_idx_by_key = {id(r): r["resume_idx"] for r in all_results}
     global_start_idx = min(resume_idx_by_key.values())
 
-    hpwh_unit_by_key = {id(r): r["sim_dwelling"].get_equipment_by_end_use('Water Heating') for r in priority_order}
+    hpwh_unit_by_key = {id(r): r["sim_dwelling"].get_equipment_by_end_use('Water Heating') for r in all_results}
 
-    released = {id(r): False for r in priority_order}
-    admitted_time = {id(r): None for r in priority_order}
-    next_candidate_idx = 0
+    released = {id(r): False for r in all_results}
+    admitted_time = {id(r): None for r in all_results}
+    # Seeded from Phase 1's event_end reading; refreshed after every
+    # update() below so the ranking always uses each unit's latest known
+    # temperature, not a value frozen at event_end (that's the V3 behavior
+    # this version replaces).
+    current_temp_by_key = {id(r): r["temp_at_event_end"] for r in all_results}
 
     aggregate_power_prev = 0.0
     fleet_power_log = []
@@ -448,27 +453,25 @@ def run_admission_controlled_recovery(phase1_results, event_cfg):
         current_cap_kw = CAP_KW
 
         # ---- Admission decision, using the previous timestep's known aggregate ----
-        # Up to max_admissions_per_timestep candidates, all gated on the
-        # SAME aggregate_power_prev snapshot (we don't have finer-grained
-        # feedback within a single timestep -- each admitted unit's actual
-        # draw only shows up once its own update() runs, below).
+        # Re-rank every eligible-and-waiting unit by live tank temperature
+        # RIGHT NOW, then take up to max_admissions_per_timestep off the
+        # top -- all gated on the SAME aggregate_power_prev snapshot (we
+        # don't have finer-grained feedback within a single timestep --
+        # each admitted unit's actual draw only shows up once its own
+        # update() runs, below).
         if aggregate_power_prev < current_cap_kw:
-            admitted_this_step = 0
-            while admitted_this_step < max_admissions_per_timestep and next_candidate_idx < n:
-                candidate = priority_order[next_candidate_idx]
-                if i < resume_idx_by_key[id(candidate)]:
-                    # This candidate's own SHED period (from its staggered
-                    # dispatch) hasn't ended yet -- it isn't eligible yet,
-                    # so no further admissions happen this timestep even
-                    # though there's headroom.
-                    break
+            waiting = [r for r in all_results
+                       if not released[id(r)] and i >= resume_idx_by_key[id(r)]]
+            # Coldest-first, matching V3's current setting. Flip to
+            # reverse=True (warmest-first) to match V3's original setting.
+            waiting.sort(key=lambda r: current_temp_by_key[id(r)], reverse=False)
+
+            for candidate in waiting[:max_admissions_per_timestep]:
                 released[id(candidate)] = True
                 admitted_time[id(candidate)] = sim_time
-                next_candidate_idx += 1
-                admitted_this_step += 1
 
         # ---- Step every home that has reached this instant forward one timestep ----
-        for r in priority_order:
+        for r in all_results:
             key = id(r)
             if i < resume_idx_by_key[key]:
                 # Phase 1 already advanced this home past this instant
@@ -481,7 +484,9 @@ def run_admission_controlled_recovery(phase1_results, event_cfg):
                 control_cmd = {"Water Heating": {"Setpoint": Tcontrol_SHEDC, "Deadband": Tcontrol_deadbandC, "Load Fraction": 1}}
 
             r["sim_dwelling"].update(control_signal=control_cmd)
-            r["tank_temp_log"].append((sim_time, get_tank_temperature_c(hpwh_unit_by_key[key])))
+            fresh_temp = get_tank_temperature_c(hpwh_unit_by_key[key])
+            r["tank_temp_log"].append((sim_time, fresh_temp))
+            current_temp_by_key[key] = fresh_temp
 
         # Best-known aggregate as of this instant: every home's most
         # recent electric_kw reading, whether freshly updated this
@@ -490,16 +495,23 @@ def run_admission_controlled_recovery(phase1_results, event_cfg):
         aggregate_power_prev = sum(u.electric_kw for u in hpwh_unit_by_key.values())
         fleet_power_log.append((sim_time, aggregate_power_prev, current_cap_kw))
 
-    never_admitted = [os.path.basename(r["home_path"]) for r in priority_order if not released[id(r)]]
+    never_admitted = [os.path.basename(r["home_path"]) for r in all_results if not released[id(r)]]
     if never_admitted:
         print(f"WARNING: {len(never_admitted)} units never admitted within the simulated window "
               f"(cap schedule too restrictive to clear the fleet in time): {never_admitted}")
 
-    for rank, r in enumerate(priority_order):
+    # priority_rank now reflects ACTUAL admission order (rank 0 = admitted
+    # first), since there's no static pre-ranking left to report -- units
+    # never admitted are ranked last, in no particular order among themselves.
+    admission_order = sorted(
+        all_results,
+        key=lambda r: (admitted_time[id(r)] is None, admitted_time[id(r)] or pd.Timestamp.min),
+    )
+    for rank, r in enumerate(admission_order):
         r["priority_rank"] = rank
         r["admitted_time"] = admitted_time[id(r)]
 
-    return priority_order, fleet_power_log
+    return all_results, fleet_power_log
 
 #########################################
 # FINALIZE + BASELINE + SAVE -- per home, parallel again (V3)

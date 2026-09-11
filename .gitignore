@@ -11,3 +11,9 @@ HPWH/*Input Files*/
 HPWH/Ready_data/
 HPWH/Metadata/
 HPWH/HPWH Filtered/
+
+# Local last-run state (see HPWH/run_context.py) -- which B3 filename the
+# C1/C2/C3 scripts should inherit, not something to share across machines.
+HPWH/.last_run_filename
+
+~$FL Reserve Calculator.xlsm

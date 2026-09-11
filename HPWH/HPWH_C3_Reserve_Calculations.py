@@ -16,6 +16,7 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import os
+from run_context import load_filename
 
 
 #########################################
@@ -24,9 +25,11 @@ import os
 
 working_dir = os.path.dirname(os.path.abspath(__file__))
 
-# OCHRE_FILENAME overrides this when set, matching whatever B3 used for
-# this run (see excel_ochre.py) -- unset, manual runs behave as before.
-input_file_root = os.environ.get('OCHRE_FILENAME', 'HPWH_AdmissionControl_n95_testx8_cap8LU')
+# OCHRE_FILENAME overrides this when set (used by excel_ochre.py); unset,
+# inherit whichever B3 version last ran (see run_context.py) so this
+# doesn't need its own name kept in sync by hand -- falling back to the
+# hardcoded default only if no B3 run has ever recorded one yet.
+input_file_root = os.environ.get('OCHRE_FILENAME') or load_filename('HPWH_AdmissionControl_n600_testx8_cap8_rerankLive')
 
 input_file_name1 = input_file_root + "_baseline"
 input_file_name2 = input_file_root + "_controlled"
@@ -49,11 +52,17 @@ DISPATCH_DATE = '2018-01-12'   # date portion for dispatch_t (Start + 1 day, sin
 # OCHRE_DISPATCH_TIME / OCHRE_DURATION_HR override these when set (see
 # excel_ochre.py) -- unset, manual runs use the same defaults as before.
 # These MUST match whatever B3 actually used for this run's data.
+
 DISPATCH_TIME = os.environ.get('OCHRE_DISPATCH_TIME', '15:00')
 EVENT_DURATION_HR = float(os.environ.get('OCHRE_DURATION_HR', 1.5))
 
+# DISPATCH_TIME = reserve_event['dispatch_time']
+# EVENT_DURATION_HR = reserve_event['duration']
+
+
 dispatch_t = pd.to_datetime(f"{DISPATCH_DATE} {DISPATCH_TIME}")
 event_end = dispatch_t + pd.Timedelta(hours=EVENT_DURATION_HR)
+
 
 #########################################
 # FLEET / CF SETTINGS
@@ -402,7 +411,8 @@ def plot_fleet_power_with_event(df_base, df_ctrl, working_dir, input_file_root):
     ax.set_title('Aggregated Fleet Power During Reserve Service Event')
     ax.set_xlabel('Time')
     ax.set_ylabel('Power (kW)')
-    ax.legend()
+    # ax.legend()
+    ax.legend(loc='upper left')
 
     #ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=8))
     ax.xaxis.set_major_locator(mdates.HourLocator(byhour=range(0, 24, 3)))
@@ -415,5 +425,8 @@ def plot_fleet_power_with_event(df_base, df_ctrl, working_dir, input_file_root):
 
     plt.savefig(photo_file, dpi=300, bbox_inches='tight')
     print(f"Plot saved to: {photo_file}")
+    return photo_file
 
-plot_fleet_power_with_event(df_base, df_ctrl, working_dir, input_file_root)
+# plot_fleet_power_with_event(df_base, df_ctrl, working_dir, input_file_root)
+
+photo_file = plot_fleet_power_with_event(df_base, df_ctrl, working_dir, input_file_root)
